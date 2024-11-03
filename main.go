@@ -10,6 +10,9 @@ const SIZE = 9
 // Sudoku board
 var board [SIZE][SIZE]int
 
+// Solution board to store the first valid solution
+var solution [SIZE][SIZE]int
+
 func main() {
 	// Validate input arguments
 	if len(os.Args) != SIZE+1 {
@@ -47,7 +50,7 @@ func main() {
 	solve(&solutions, 2)
 
 	if solutions == 1 {
-		printBoard()
+		printBoard(solution)
 	} else {
 		fmt.Println("Error")
 	}
@@ -115,6 +118,10 @@ func solve(solutions *int, limit int) {
 	row, col, empty := findEmpty()
 	if !empty {
 		*solutions++
+		// If it's the first solution, copy it to the solution board
+		if *solutions == 1 {
+			copySolution()
+		}
 		return
 	}
 
@@ -162,11 +169,20 @@ func isSafe(row, col, num int) bool {
 	return true
 }
 
-// Print the solved Sudoku board
-func printBoard() {
+// Copy the current board to the solution board
+func copySolution() {
 	for i := 0; i < SIZE; i++ {
 		for j := 0; j < SIZE; j++ {
-			fmt.Printf("%d", board[i][j])
+			solution[i][j] = board[i][j]
+		}
+	}
+}
+
+// Print the solved Sudoku board
+func printBoard(b [SIZE][SIZE]int) {
+	for i := 0; i < SIZE; i++ {
+		for j := 0; j < SIZE; j++ {
+			fmt.Printf("%d", b[i][j])
 			if j != SIZE-1 {
 				fmt.Print(" ")
 			}
