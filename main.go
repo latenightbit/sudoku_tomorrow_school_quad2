@@ -7,20 +7,16 @@ import (
 
 const SIZE = 9
 
-// Sudoku board
 var board [SIZE][SIZE]int
 
-// Solution board to store the first valid solution
 var solution [SIZE][SIZE]int
 
 func main() {
-	// Validate input arguments
 	if len(os.Args) != SIZE+1 {
 		fmt.Println("Error")
 		return
 	}
 
-	// Parse input into the board
 	for i := 0; i < SIZE; i++ {
 		line := os.Args[i+1]
 		if len(line) != SIZE {
@@ -39,13 +35,11 @@ func main() {
 		}
 	}
 
-	// Check if the initial board is valid
 	if !isValid() {
 		fmt.Println("Error")
 		return
 	}
 
-	// Solve the Sudoku and check for uniqueness
 	solutions := 0
 	solve(&solutions, 2)
 
@@ -56,21 +50,17 @@ func main() {
 	}
 }
 
-// Check if the current board is valid
 func isValid() bool {
-	// Check rows and columns
 	for i := 0; i < SIZE; i++ {
 		row := make([]bool, SIZE+1)
 		col := make([]bool, SIZE+1)
 		for j := 0; j < SIZE; j++ {
-			// Check row
 			if board[i][j] != 0 {
 				if row[board[i][j]] {
 					return false
 				}
 				row[board[i][j]] = true
 			}
-			// Check column
 			if board[j][i] != 0 {
 				if col[board[j][i]] {
 					return false
@@ -80,7 +70,6 @@ func isValid() bool {
 		}
 	}
 
-	// Check 3x3 subgrids
 	for i := 0; i < SIZE; i += 3 {
 		for j := 0; j < SIZE; j += 3 {
 			if !isValidSubgrid(i, j) {
@@ -92,7 +81,6 @@ func isValid() bool {
 	return true
 }
 
-// Check if a 3x3 subgrid is valid
 func isValidSubgrid(startRow, startCol int) bool {
 	marks := make([]bool, SIZE+1)
 	for i := 0; i < 3; i++ {
@@ -109,7 +97,6 @@ func isValidSubgrid(startRow, startCol int) bool {
 	return true
 }
 
-// Recursive solver to find all solutions up to the limit
 func solve(solutions *int, limit int) {
 	if *solutions >= limit {
 		return
@@ -118,7 +105,6 @@ func solve(solutions *int, limit int) {
 	row, col, empty := findEmpty()
 	if !empty {
 		*solutions++
-		// If it's the first solution, copy it to the solution board
 		if *solutions == 1 {
 			copySolution()
 		}
@@ -134,7 +120,6 @@ func solve(solutions *int, limit int) {
 	}
 }
 
-// Find the next empty cell
 func findEmpty() (int, int, bool) {
 	for i := 0; i < SIZE; i++ {
 		for j := 0; j < SIZE; j++ {
@@ -146,16 +131,13 @@ func findEmpty() (int, int, bool) {
 	return -1, -1, false
 }
 
-// Check if it's safe to place a number in a cell
 func isSafe(row, col, num int) bool {
-	// Check row and column
 	for i := 0; i < SIZE; i++ {
 		if board[row][i] == num || board[i][col] == num {
 			return false
 		}
 	}
 
-	// Check 3x3 subgrid
 	startRow := (row / 3) * 3
 	startCol := (col / 3) * 3
 	for i := 0; i < 3; i++ {
@@ -169,7 +151,6 @@ func isSafe(row, col, num int) bool {
 	return true
 }
 
-// Copy the current board to the solution board
 func copySolution() {
 	for i := 0; i < SIZE; i++ {
 		for j := 0; j < SIZE; j++ {
@@ -178,7 +159,6 @@ func copySolution() {
 	}
 }
 
-// Print the solved Sudoku board
 func printBoard(b [SIZE][SIZE]int) {
 	for i := 0; i < SIZE; i++ {
 		for j := 0; j < SIZE; j++ {
